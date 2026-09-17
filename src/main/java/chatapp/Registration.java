@@ -34,6 +34,8 @@ public class Registration {
         boolean hasNumber = false;
         boolean hasSpecial = false;
 
+        // check each character one at a time to see if it satisfies
+        // any of the three complexity conditions (capital, number, special)
         for (int i = 0; i < password.length(); i++) {
             char currentChar = password.charAt(i);
 
@@ -55,10 +57,9 @@ public class Registration {
         }
     }
 
-    // checks that the cell phone number starts with South Africa's
-    // international code (+27) and is no more than 10 digits after that
-    // Regex approach based on Java Pattern/Matcher documentation:
-    // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
+    // regex breakdown: ^ and $ mark start/end of string,
+    // \\+27 matches the literal country code, \\d{1,10} matches
+    // between 1 and 10 digits after that
     public boolean checkCellPhoneNumber(String phoneNumber) {
 
         String regex = "^\\+27\\d{1,10}$";
