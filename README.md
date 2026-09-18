@@ -46,3 +46,9 @@ JUnit tests are included for both `Registration` and `Login`, covering:
 
 The cell phone number validation uses Java's built-in regular expression matching, based on the official Java documentation:
 https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
+
+
+## Test Coverage
+
+- 8 tests for `Registration` (username, password, cell phone checks, and registration messages)
+- 4 tests for `Login` (login success/failure and status messages)
