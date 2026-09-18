@@ -15,7 +15,7 @@ public class Main {
         boolean registeredSuccessfully = false;
 
         // Registration section
-        System.out.println("=== Registration ===");
+        System.out.println(" Registration ");
 
         System.out.print("Enter a username: ");
         String username = input.nextLine();
@@ -39,7 +39,7 @@ public class Main {
 
         // Login section - only offered if registration succeeded
         if (registeredSuccessfully) {
-            System.out.println("\n=== Login ===");
+            System.out.println("\n Login ");
 
             System.out.print("Enter your username: ");
             String loginUsername = input.nextLine();

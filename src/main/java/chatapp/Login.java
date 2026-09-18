@@ -5,13 +5,13 @@ public class Login {
     private Registration registration;
     private boolean loginSuccessful;
 
-    // Login needs to know which Registration object holds the registered details
+    // links this Login to a Registration
     public Login(Registration registration) {
         this.registration = registration;
         this.loginSuccessful = false;
     }
 
-    // checks if the entered username and password match what was registered
+    // checks username and password against stored details
     public boolean loginUser(String username, String password) {
 
         String storedUsername = registration.getStoredUsername();
@@ -26,7 +26,7 @@ public class Login {
         return loginSuccessful;
     }
 
-    // returns the correct message depending on login outcome
+    // returns welcome or failure message
     public String returnLoginStatus(String username) {
 
         if (loginSuccessful) {
