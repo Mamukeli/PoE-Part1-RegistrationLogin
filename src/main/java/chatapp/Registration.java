@@ -15,7 +15,7 @@ public class Registration {
         return storedPassword;
     }
 
-    // checks if username has an underscore and is 5 characters or less
+    // checks for underscore and max 5 characters
     public boolean checkUserName(String username) {
         boolean hasUnderscore = username.contains("_");
         boolean correctLength = username.length() <= 5;
@@ -27,15 +27,14 @@ public class Registration {
         }
     }
 
-    // checks if password meets complexity rules
+    // checks password length, capital, number, special character
     public boolean checkPasswordComplexity(String password) {
         boolean longEnough = password.length() >= 8;
         boolean hasCapital = false;
         boolean hasNumber = false;
         boolean hasSpecial = false;
 
-        // check each character one at a time to see if it satisfies
-        // any of the three complexity conditions (capital, number, special)
+        // checks each character against the complexity rules
         for (int i = 0; i < password.length(); i++) {
             char currentChar = password.charAt(i);
 
@@ -67,8 +66,7 @@ public class Registration {
         return phoneNumber.matches(regex);
     }
 
-    // registers the user if username and password are valid,
-    // and returns the correct message for each outcome
+    // validates and registers the user, returns result message
     public String registerUser(String username, String password, String cellPhone) {
 
         boolean validUsername = checkUserName(username);
