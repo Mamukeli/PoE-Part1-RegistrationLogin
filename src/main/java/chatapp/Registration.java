@@ -26,9 +26,9 @@ public class Registration {
             return false;
         }
     }
-
     // checks password length, capital, number, special character
     public boolean checkPasswordComplexity(String password) {
+
         boolean longEnough = password.length() >= 8;
         boolean hasCapital = false;
         boolean hasNumber = false;
@@ -38,22 +38,12 @@ public class Registration {
         for (int i = 0; i < password.length(); i++) {
             char currentChar = password.charAt(i);
 
-            if (Character.isUpperCase(currentChar)) {
-                hasCapital = true;
-            }
-            if (Character.isDigit(currentChar)) {
-                hasNumber = true;
-            }
-            if (!Character.isLetterOrDigit(currentChar)) {
-                hasSpecial = true;
-            }
+            if (Character.isUpperCase(currentChar)) hasCapital = true;
+            if (Character.isDigit(currentChar)) hasNumber = true;
+            if (!Character.isLetterOrDigit(currentChar)) hasSpecial = true;
         }
 
-        if (longEnough && hasCapital && hasNumber && hasSpecial) {
-            return true;
-        } else {
-            return false;
-        }
+        return longEnough && hasCapital && hasNumber && hasSpecial;
     }
 
     // regex breakdown: ^ and $ mark start/end of string,
