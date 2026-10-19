@@ -10,12 +10,10 @@ public class Main {
         Registration registration = new Registration();
         Login login = new Login(registration);
 
-        // keep track of whether registration succeeded, so we don't
-        // let the user try to log in before they've registered
         boolean registeredSuccessfully = false;
 
         // Registration section
-        System.out.println(" Registration ");
+        System.out.println("=== Registration ===");
 
         System.out.print("Enter a username: ");
         String username = input.nextLine();
@@ -29,8 +27,7 @@ public class Main {
         String registrationMessage = registration.registerUser(username, password, cellPhone);
         System.out.println(registrationMessage);
 
-        // check if registration actually succeeded by testing the
-        // conditions again - if all pass, registration went through
+        // registration worked if all three success messages came back
         if (registrationMessage.contains("Username successfully captured.")
                 && registrationMessage.contains("Password successfully captured.")
                 && registrationMessage.contains("Cell phone number successfully added.")) {
@@ -39,7 +36,7 @@ public class Main {
 
         // Login section - only offered if registration succeeded
         if (registeredSuccessfully) {
-            System.out.println("\n Login ");
+            System.out.println("\n=== Login ===");
 
             System.out.print("Enter your username: ");
             String loginUsername = input.nextLine();
@@ -47,8 +44,13 @@ public class Main {
             System.out.print("Enter your password: ");
             String loginPassword = input.nextLine();
 
-            login.loginUser(loginUsername, loginPassword);
+            boolean loggedIn = login.loginUser(loginUsername, loginPassword);
             System.out.println(login.returnLoginStatus(loginUsername));
+
+            // only logged in users can use QuickChat
+            if (loggedIn) {
+                QuickChat.start(input);
+            }
 
         } else {
             System.out.println("\nRegistration was not successful, so login cannot proceed.");

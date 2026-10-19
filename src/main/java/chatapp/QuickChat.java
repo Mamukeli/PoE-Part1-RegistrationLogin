@@ -115,9 +115,4 @@ public class QuickChat {
         return messagesEntered;
     }
 
-    // temporary test - will be replaced in Step 8
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        start(input);
-    }
 }
