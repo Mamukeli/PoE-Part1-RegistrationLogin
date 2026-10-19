@@ -33,6 +33,28 @@ public class Message {
         return messageId.length() <= 10;
     }
 
+    // checks the recipient starts with +27 and has up to 10 digits after it
+    // same regex as Part 1
+    public String checkRecipientCell() {
+        String regex = "^\\+27\\d{1,10}$";
+
+        if (recipient.matches(regex)) {
+            return "Cell phone number successfully captured.";
+        } else {
+            return "Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.";
+        }
+    }
+
+    // checks the message is 250 characters or less
+    public String checkMessageLength() {
+        if (messageText.length() <= 250) {
+            return "Message ready to send.";
+        } else {
+            int extra = messageText.length() - 250;
+            return "Message exceeds 250 characters by " + extra + "; please reduce the size.";
+        }
+    }
+
     public String getMessageId() {
         return messageId;
     }
@@ -41,7 +63,15 @@ public class Message {
     public static void main(String[] args) {
         Message msg = new Message(0, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
 
-        System.out.println(msg.getMessageId());   // expect: 10 digits
-        System.out.println(msg.checkMessageID()); // expect: true
+        System.out.println(msg.getMessageId());
+        System.out.println(msg.checkMessageID());
+        System.out.println(msg.checkRecipientCell());
+        System.out.println(msg.checkMessageLength());
+
+        Message wrongNumber = new Message(1, "08575975889", "Hi Keegan, did you receive the payment?");
+        System.out.println(wrongNumber.checkRecipientCell());
+
+        Message longMessage = new Message(2, "+27718693002", "a".repeat(260));
+        System.out.println(longMessage.checkMessageLength());
     }
 }
