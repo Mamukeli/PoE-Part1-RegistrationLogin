@@ -170,20 +170,23 @@ public class Message {
         return text.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
+    // returns the message for when an ID is created
+    public String messageIdGenerated() {
+        return "Message ID generated: " + messageId;
+    }
+
+    // clears the totals and lists, used by the unit tests
+    public static void resetMessages() {
+        sentMessages.clear();
+        storedMessages.clear();
+        totalSent = 0;
+    }
+
     public String getMessageId() {
         return messageId;
     }
 
     public String getMessageHash() {
         return messageHash;
-    }
-
-    // temporary test - will be removed later
-    public static void main(String[] args) {
-        Message msg1 = new Message(0, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
-        Message msg2 = new Message(1, "+27838968976", "Hi Keegan, did you receive the \"payment\"?");
-
-        System.out.println(msg1.SentMessage(3)); // expect: Message successfully stored.
-        System.out.println(msg2.SentMessage(3)); // expect: Message successfully stored.
     }
 }
