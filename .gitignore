@@ -36,4 +36,5 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_StorestoredMessages.json
+.DS_Store
+storedMessages.json
