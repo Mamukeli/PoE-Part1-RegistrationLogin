@@ -1,5 +1,6 @@
 package chatapp;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Message {
@@ -9,6 +10,10 @@ public class Message {
     private String recipient;
     private String messageText;
     private String messageHash;
+
+    // shared by all messages while the program runs
+    private static ArrayList<String> sentMessages = new ArrayList<>();
+    private static int totalSent = 0;
 
     // normal constructor - creates a random ID
     public Message(int messageNumber, String recipient, String messageText) {
@@ -80,6 +85,45 @@ public class Message {
         return (firstTwo + ":" + messageNumber + ":" + firstWord + lastWord).toUpperCase();
     }
 
+    // choice 1 = send, 2 = disregard, 3 = store
+    public String SentMessage(int choice) {
+        if (choice == 1) {
+            sentMessages.add(messageDetails());
+            totalSent++;
+            return "Message successfully sent.";
+        } else if (choice == 2) {
+            return "Press 0 to delete the message.";
+        } else if (choice == 3) {
+            return "Message successfully stored.";
+        } else {
+            return "Invalid choice.";
+        }
+    }
+
+    // full details of this message: ID, hash, recipient, message
+    public String messageDetails() {
+        return "Message ID: " + messageId + "\n"
+                + "Message Hash: " + messageHash + "\n"
+                + "Recipient: " + recipient + "\n"
+                + "Message: " + messageText;
+    }
+
+    // returns all messages sent while the program is running
+    public String printMessages() {
+        String all = "";
+
+        for (int i = 0; i < sentMessages.size(); i++) {
+            all = all + sentMessages.get(i) + "\n\n";
+        }
+
+        return all;
+    }
+
+    // returns the total number of messages sent
+    public int returnTotalMessagess() {
+        return totalSent;
+    }
+
     public String getMessageId() {
         return messageId;
     }
@@ -90,16 +134,15 @@ public class Message {
 
     // temporary test - will be removed later
     public static void main(String[] args) {
-        Message msg = new Message(0, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
+        Message msg1 = new Message(0, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
+        Message msg2 = new Message(1, "08575975889", "Hi Keegan, did you receive the payment?");
 
-        System.out.println(msg.getMessageId());
-        System.out.println(msg.checkMessageID());
-        System.out.println(msg.checkRecipientCell());
-        System.out.println(msg.checkMessageLength());
-        System.out.println(msg.getMessageHash());
+        System.out.println(msg1.SentMessage(1)); // expect: Message successfully sent.
+        System.out.println(msg2.SentMessage(2)); // expect: Press 0 to delete the message.
+        System.out.println(msg1.SentMessage(3)); // expect: Message successfully stored.
 
-        // known ID so we can check the hash
-        Message testMsg = new Message("0012345678", 0, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
-        System.out.println(testMsg.getMessageHash());   // expect: 00:0:HITONIGHT
+        System.out.println(msg1.messageDetails());
+        System.out.println(msg1.printMessages());
+        System.out.println("Total sent: " + msg1.returnTotalMessagess()); // expect: 1
     }
 }
