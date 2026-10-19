@@ -1,5 +1,7 @@
 package chatapp;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,6 +15,7 @@ public class Message {
 
     // shared by all messages while the program runs
     private static ArrayList<String> sentMessages = new ArrayList<>();
+    private static ArrayList<String> storedMessages = new ArrayList<>();
     private static int totalSent = 0;
 
     // normal constructor - creates a random ID
@@ -94,6 +97,7 @@ public class Message {
         } else if (choice == 2) {
             return "Press 0 to delete the message.";
         } else if (choice == 3) {
+            storeMessage();
             return "Message successfully stored.";
         } else {
             return "Invalid choice.";
@@ -124,6 +128,48 @@ public class Message {
         return totalSent;
     }
 
+    // saves this message into storedMessages.json
+    // Reference: https://docs.oracle.com/javase/8/docs/api/java/io/FileWriter.html
+    public void storeMessage() {
+        storedMessages.add(toJson());
+
+        try {
+            FileWriter writer = new FileWriter("storedMessages.json");
+
+            writer.write("[\n");
+
+            for (int i = 0; i < storedMessages.size(); i++) {
+                writer.write("  " + storedMessages.get(i));
+
+                // every message except the last needs a comma after it
+                if (i < storedMessages.size() - 1) {
+                    writer.write(",");
+                }
+
+                writer.write("\n");
+            }
+
+            writer.write("]");
+            writer.close();
+
+        } catch (IOException e) {
+            System.out.println("Could not store the message: " + e.getMessage());
+        }
+    }
+
+    // turns this message into one JSON object
+    private String toJson() {
+        return "{\"messageId\": \"" + messageId + "\", "
+                + "\"messageHash\": \"" + messageHash + "\", "
+                + "\"recipient\": \"" + recipient + "\", "
+                + "\"message\": \"" + cleanForJson(messageText) + "\"}";
+    }
+
+    // makes quotes and backslashes safe to put inside JSON text
+    private String cleanForJson(String text) {
+        return text.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
     public String getMessageId() {
         return messageId;
     }
@@ -135,14 +181,9 @@ public class Message {
     // temporary test - will be removed later
     public static void main(String[] args) {
         Message msg1 = new Message(0, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
-        Message msg2 = new Message(1, "08575975889", "Hi Keegan, did you receive the payment?");
+        Message msg2 = new Message(1, "+27838968976", "Hi Keegan, did you receive the \"payment\"?");
 
-        System.out.println(msg1.SentMessage(1)); // expect: Message successfully sent.
-        System.out.println(msg2.SentMessage(2)); // expect: Press 0 to delete the message.
         System.out.println(msg1.SentMessage(3)); // expect: Message successfully stored.
-
-        System.out.println(msg1.messageDetails());
-        System.out.println(msg1.printMessages());
-        System.out.println("Total sent: " + msg1.returnTotalMessagess()); // expect: 1
+        System.out.println(msg2.SentMessage(3)); // expect: Message successfully stored.
     }
 }
