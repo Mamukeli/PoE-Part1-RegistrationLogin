@@ -113,7 +113,7 @@ public class Message {
     }
 
     // returns all messages sent while the program is running
-    public String printMessages() {
+    public static String printMessages() {
         String all = "";
 
         for (int i = 0; i < sentMessages.size(); i++) {
@@ -124,7 +124,7 @@ public class Message {
     }
 
     // returns the total number of messages sent
-    public int returnTotalMessagess() {
+    public static int returnTotalMessagess() {
         return totalSent;
     }
 
