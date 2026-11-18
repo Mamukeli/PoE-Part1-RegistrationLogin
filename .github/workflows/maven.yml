@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master", "SendingMessages" ]
+    branches: [ "master", "SendingMessages", "StoredMessages" ]
 
 jobs:
   build:
