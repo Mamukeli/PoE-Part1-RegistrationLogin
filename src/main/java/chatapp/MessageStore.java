@@ -1,5 +1,11 @@
 package chatapp;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +70,37 @@ public class MessageStore {
 
         } catch (IOException e) {
             System.out.println("Could not store the messages: " + e.getMessage());
+        }
+    }
+
+    // reads the JSON file into the stored messages array
+    // Reference: https://github.com/google/gson/blob/main/UserGuide.md
+    public static void loadStoredMessages() {
+        File file = new File(fileName);
+
+        // nothing to read if no messages have been stored yet
+        if (!file.exists()) {
+            return;
+        }
+
+        try {
+            FileReader reader = new FileReader(file);
+            JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
+            reader.close();
+
+            for (int i = 0; i < array.size(); i++) {
+                JsonObject object = array.get(i).getAsJsonObject();
+
+                String id = object.get("messageId").getAsString();
+                String hash = object.get("messageHash").getAsString();
+                String recipient = object.get("recipient").getAsString();
+                String text = object.get("message").getAsString();
+
+                addStored(new Message(id, hash, recipient, text));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Could not read the stored messages: " + e.getMessage());
         }
     }
 
