@@ -104,6 +104,140 @@ public class MessageStore {
         }
     }
 
+    // puts the sent, disregarded and stored messages into one list for searching
+    private static ArrayList<Message> allMessages() {
+        ArrayList<Message> all = new ArrayList<>();
+        all.addAll(sentMessages);
+        all.addAll(disregardedMessages);
+        all.addAll(storedMessages);
+        return all;
+    }
+
+    // shows every stored message in full
+    public static String displayStoredMessages() {
+        if (storedMessages.size() == 0) {
+            return "There are no stored messages.";
+        }
+
+        String result = "";
+
+        for (int i = 0; i < storedMessages.size(); i++) {
+            result = result + storedMessages.get(i).messageDetails() + "\n\n";
+        }
+
+        return result;
+    }
+
+    // a) shows the sender and recipient of every stored message
+    public static String displaySenderAndRecipient(String sender) {
+        if (storedMessages.size() == 0) {
+            return "There are no stored messages.";
+        }
+
+        String result = "";
+
+        for (int i = 0; i < storedMessages.size(); i++) {
+            result = result + "Sender: " + sender
+                    + " | Recipient: " + storedMessages.get(i).getRecipient() + "\n";
+        }
+
+        return result;
+    }
+
+    // b) finds the message with the most characters
+    public static Message findLongestMessage() {
+        Message longest = null;
+        ArrayList<Message> all = allMessages();
+
+        for (int i = 0; i < all.size(); i++) {
+            if (longest == null
+                    || all.get(i).getMessageText().length() > longest.getMessageText().length()) {
+                longest = all.get(i);
+            }
+        }
+
+        return longest;
+    }
+
+    // c) finds a message using its message ID (null if not found)
+    public static Message findByMessageId(String id) {
+        ArrayList<Message> all = allMessages();
+
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getMessageId().equals(id)) {
+                return all.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    // d) finds the text of all sent or stored messages for one recipient
+    public static ArrayList<String> searchByRecipient(String recipient) {
+        ArrayList<String> found = new ArrayList<>();
+
+        for (int i = 0; i < sentMessages.size(); i++) {
+            if (sentMessages.get(i).getRecipient().equals(recipient)) {
+                found.add(sentMessages.get(i).getMessageText());
+            }
+        }
+
+        for (int i = 0; i < storedMessages.size(); i++) {
+            if (storedMessages.get(i).getRecipient().equals(recipient)) {
+                found.add(storedMessages.get(i).getMessageText());
+            }
+        }
+
+        return found;
+    }
+
+    // e) deletes a message using its hash
+    public static String deleteByHash(String hash) {
+        Message found = null;
+        ArrayList<Message> all = allMessages();
+
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getMessageHash().equals(hash)) {
+                found = all.get(i);
+            }
+        }
+
+        if (found == null) {
+            return "Message hash not found.";
+        }
+
+        // remove it from every array
+        sentMessages.remove(found);
+        disregardedMessages.remove(found);
+        storedMessages.remove(found);
+        messageHashes.remove(found.getMessageHash());
+        messageIds.remove(found.getMessageId());
+
+        // keep the JSON file in step with the stored array
+        saveStoredMessages();
+
+        return "Message: \"" + found.getMessageText() + "\" successfully deleted.";
+    }
+
+    // f) report with the full details of all sent and stored messages
+    public static String displayReport() {
+        if (sentMessages.size() == 0 && storedMessages.size() == 0) {
+            return "There are no messages to report on.";
+        }
+
+        String report = "===== MESSAGE REPORT =====\n";
+
+        for (int i = 0; i < sentMessages.size(); i++) {
+            report = report + "\nSent message\n" + sentMessages.get(i).messageDetails() + "\n";
+        }
+
+        for (int i = 0; i < storedMessages.size(); i++) {
+            report = report + "\nStored message\n" + storedMessages.get(i).messageDetails() + "\n";
+        }
+
+        return report;
+    }
+
     // empties all the arrays
     public static void clearAll() {
         sentMessages.clear();
