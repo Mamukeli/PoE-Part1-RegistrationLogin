@@ -3,7 +3,7 @@ package chatapp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.io.File;
 public class MessageTest {
 
     // test data from the brief
@@ -12,9 +12,11 @@ public class MessageTest {
     String recipient2 = "08575975889";
     String text2 = "Hi Keegan, did you receive the payment?";
 
-    // start every test with fresh totals
+    // start every test with fresh arrays and a separate test file
     @BeforeEach
     public void setUp() {
+        MessageStore.fileName = "testMessages.json";
+        new File("testMessages.json").delete();
         Message.resetMessages();
     }
 

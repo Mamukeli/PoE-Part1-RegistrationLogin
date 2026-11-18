@@ -99,11 +99,12 @@ public class QuickChat {
                 String confirm = input.nextLine().trim();
 
                 if (confirm.equals("0")) {
-                    System.out.println("Message deleted.");
+                    message.disregardMessage();
+                    System.out.println("Message disregarded.");
+                    messagesEntered++;
                 } else {
-                    System.out.println("Message was not deleted.");
+                    System.out.println("Message was not disregarded, please enter the message again.");
                 }
-                messagesEntered++;
             } else if (choice.equals("3")) {
                 System.out.println(message.SentMessage(3));
                 messagesEntered++;
@@ -114,5 +115,4 @@ public class QuickChat {
 
         return messagesEntered;
     }
-
 }
