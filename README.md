@@ -52,3 +52,23 @@ https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
 
 - 8 tests for `Registration` (username, password, cell phone checks, and registration messages)
 - 4 tests for `Login` (login success/failure and status messages)
+
+
+## Part 2 and Part 3: QuickChat
+
+After logging in, the user can use QuickChat:
+
+- Send, disregard or store messages, up to the number the user chooses
+- Each message has a random 10-digit ID and a message hash
+- Stored messages are saved in storedMessages.json and read back in when QuickChat starts
+- The Stored Messages menu (option 4) can display the sender and recipient, show the longest message, search by message ID, search by recipient, delete a message by its hash, and display a report
+
+## Classes added
+
+- Message: one message and its checks
+- MessageStore: the arrays (sent, disregarded, stored, hashes and IDs) and the search, delete and report methods
+- QuickChat: the menu
+
+## Tests
+
+34 JUnit tests run automatically with GitHub Actions every time code is pushed.
