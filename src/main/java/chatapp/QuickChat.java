@@ -1,13 +1,17 @@
 package chatapp;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class QuickChat {
 
     // runs the QuickChat menu - the Scanner is passed in so the app shares one
-    public static void start(Scanner input) {
+    public static void start(Scanner input, String username) {
 
         System.out.println("Welcome to QuickChat.");
+
+        // read any stored messages from the JSON file into the stored array
+        MessageStore.loadStoredMessages();
 
         // the user decides how many messages they want to enter
         System.out.print("How many messages would you like to enter? ");
@@ -20,6 +24,7 @@ public class QuickChat {
             System.out.println("\n1) Send Messages");
             System.out.println("2) Show recently sent messages");
             System.out.println("3) Quit");
+            System.out.println("4) Stored Messages");
             System.out.print("Choose an option: ");
             String option = input.nextLine().trim();
 
@@ -29,8 +34,10 @@ public class QuickChat {
                 System.out.println("Coming Soon.");
             } else if (option.equals("3")) {
                 running = false;
+            } else if (option.equals("4")) {
+                storedMessagesMenu(input, username);
             } else {
-                System.out.println("Invalid option, please enter 1, 2 or 3.");
+                System.out.println("Invalid option, please enter 1, 2, 3 or 4.");
             }
         }
 
@@ -99,11 +106,12 @@ public class QuickChat {
                 String confirm = input.nextLine().trim();
 
                 if (confirm.equals("0")) {
-                    System.out.println("Message deleted.");
+                    message.disregardMessage();
+                    System.out.println("Message disregarded.");
+                    messagesEntered++;
                 } else {
-                    System.out.println("Message was not deleted.");
+                    System.out.println("Message was not disregarded, please enter the message again.");
                 }
-                messagesEntered++;
             } else if (choice.equals("3")) {
                 System.out.println(message.SentMessage(3));
                 messagesEntered++;
@@ -115,4 +123,95 @@ public class QuickChat {
         return messagesEntered;
     }
 
+    // the Stored Messages menu (main menu option 4)
+    private static void storedMessagesMenu(Scanner input, String username) {
+
+        // show the messages that were read from the JSON file
+        System.out.println("\nStored messages (read from the JSON file):");
+        System.out.println(MessageStore.displayStoredMessages());
+
+        boolean back = false;
+
+        while (!back) {
+            System.out.println("===== STORED MESSAGES =====");
+            System.out.println("1) Display sender and recipient of all stored messages");
+            System.out.println("2) Display the longest message");
+            System.out.println("3) Search for a message ID");
+            System.out.println("4) Search for messages by recipient");
+            System.out.println("5) Delete a message using its message hash");
+            System.out.println("6) Display message report");
+            System.out.println("7) Back to main menu");
+            System.out.print("Choose an option: ");
+            String choice = input.nextLine().trim();
+
+            if (choice.equals("1")) {
+                System.out.println(MessageStore.displaySenderAndRecipient(username));
+            } else if (choice.equals("2")) {
+                showLongestMessage();
+            } else if (choice.equals("3")) {
+                searchByMessageId(input);
+            } else if (choice.equals("4")) {
+                searchByRecipient(input);
+            } else if (choice.equals("5")) {
+                deleteMessage(input);
+            } else if (choice.equals("6")) {
+                System.out.println(MessageStore.displayReport());
+            } else if (choice.equals("7")) {
+                back = true;
+            } else {
+                System.out.println("Invalid option, please enter 1 to 7.");
+            }
+        }
+    }
+
+    // shows the longest message
+    private static void showLongestMessage() {
+        Message longest = MessageStore.findLongestMessage();
+
+        if (longest == null) {
+            System.out.println("There are no messages yet.");
+        } else {
+            System.out.println("Longest message:");
+            System.out.println(longest.messageDetails());
+        }
+    }
+
+    // asks for a message ID and shows the recipient and message
+    private static void searchByMessageId(Scanner input) {
+        System.out.print("Enter the message ID: ");
+        String id = input.nextLine().trim();
+
+        Message found = MessageStore.findByMessageId(id);
+
+        if (found == null) {
+            System.out.println("Message ID not found.");
+        } else {
+            System.out.println("Recipient: " + found.getRecipient());
+            System.out.println("Message: " + found.getMessageText());
+        }
+    }
+
+    // asks for a recipient and shows all their sent or stored messages
+    private static void searchByRecipient(Scanner input) {
+        System.out.print("Enter the recipient number: ");
+        String recipient = input.nextLine().trim();
+
+        ArrayList<String> found = MessageStore.searchByRecipient(recipient);
+
+        if (found.size() == 0) {
+            System.out.println("No messages found for " + recipient + ".");
+        } else {
+            for (int i = 0; i < found.size(); i++) {
+                System.out.println((i + 1) + ") " + found.get(i));
+            }
+        }
+    }
+
+    // asks for a message hash and deletes that message
+    private static void deleteMessage(Scanner input) {
+        System.out.print("Enter the message hash: ");
+        String hash = input.nextLine().trim().toUpperCase();
+
+        System.out.println(MessageStore.deleteByHash(hash));
+    }
 }

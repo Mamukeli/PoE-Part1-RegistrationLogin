@@ -1,8 +1,5 @@
 package chatapp;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Message {
@@ -12,11 +9,6 @@ public class Message {
     private String recipient;
     private String messageText;
     private String messageHash;
-
-    // shared by all messages while the program runs
-    private static ArrayList<String> sentMessages = new ArrayList<>();
-    private static ArrayList<String> storedMessages = new ArrayList<>();
-    private static int totalSent = 0;
 
     // normal constructor - creates a random ID
     public Message(int messageNumber, String recipient, String messageText) {
@@ -34,6 +26,14 @@ public class Message {
         this.recipient = recipient;
         this.messageText = messageText;
         this.messageHash = createMessageHash();
+    }
+
+    // third constructor - used when a message is read back from the JSON file
+    public Message(String messageId, String messageHash, String recipient, String messageText) {
+        this.messageId = messageId;
+        this.messageHash = messageHash;
+        this.recipient = recipient;
+        this.messageText = messageText;
     }
 
     // creates a random 10-digit ID
@@ -91,8 +91,7 @@ public class Message {
     // choice 1 = send, 2 = disregard, 3 = store
     public String SentMessage(int choice) {
         if (choice == 1) {
-            sentMessages.add(messageDetails());
-            totalSent++;
+            MessageStore.addSent(this);
             return "Message successfully sent.";
         } else if (choice == 2) {
             return "Press 0 to delete the message.";
@@ -102,6 +101,11 @@ public class Message {
         } else {
             return "Invalid choice.";
         }
+    }
+
+    // adds this message to the disregarded array (after the user enters 0)
+    public void disregardMessage() {
+        MessageStore.addDisregarded(this);
     }
 
     // full details of this message: ID, hash, recipient, message
@@ -116,8 +120,8 @@ public class Message {
     public static String printMessages() {
         String all = "";
 
-        for (int i = 0; i < sentMessages.size(); i++) {
-            all = all + sentMessages.get(i) + "\n\n";
+        for (int i = 0; i < MessageStore.sentMessages.size(); i++) {
+            all = all + MessageStore.sentMessages.get(i).messageDetails() + "\n\n";
         }
 
         return all;
@@ -125,40 +129,17 @@ public class Message {
 
     // returns the total number of messages sent
     public static int returnTotalMessagess() {
-        return totalSent;
+        return MessageStore.sentMessages.size();
     }
 
-    // saves this message into storedMessages.json
-    // Reference: https://docs.oracle.com/javase/8/docs/api/java/io/FileWriter.html
+    // saves this message in the stored array and in the JSON file
     public void storeMessage() {
-        storedMessages.add(toJson());
-
-        try {
-            FileWriter writer = new FileWriter("storedMessages.json");
-
-            writer.write("[\n");
-
-            for (int i = 0; i < storedMessages.size(); i++) {
-                writer.write("  " + storedMessages.get(i));
-
-                // every message except the last needs a comma after it
-                if (i < storedMessages.size() - 1) {
-                    writer.write(",");
-                }
-
-                writer.write("\n");
-            }
-
-            writer.write("]");
-            writer.close();
-
-        } catch (IOException e) {
-            System.out.println("Could not store the message: " + e.getMessage());
-        }
+        MessageStore.addStored(this);
+        MessageStore.saveStoredMessages();
     }
 
     // turns this message into one JSON object
-    private String toJson() {
+    public String toJson() {
         return "{\"messageId\": \"" + messageId + "\", "
                 + "\"messageHash\": \"" + messageHash + "\", "
                 + "\"recipient\": \"" + recipient + "\", "
@@ -175,11 +156,9 @@ public class Message {
         return "Message ID generated: " + messageId;
     }
 
-    // clears the totals and lists, used by the unit tests
+    // clears all the arrays, used by the unit tests
     public static void resetMessages() {
-        sentMessages.clear();
-        storedMessages.clear();
-        totalSent = 0;
+        MessageStore.clearAll();
     }
 
     public String getMessageId() {
@@ -188,5 +167,13 @@ public class Message {
 
     public String getMessageHash() {
         return messageHash;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public String getMessageText() {
+        return messageText;
     }
 }

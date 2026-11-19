@@ -49,7 +49,7 @@ public class Main {
 
             // only logged in users can use QuickChat
             if (loggedIn) {
-                QuickChat.start(input);
+                QuickChat.start(input, loginUsername);
             }
 
         } else {
